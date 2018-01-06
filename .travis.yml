@@ -1,5 +1,27 @@
+
+sudo: required
 language: java
-script: mvn verify
+
 jdk:
   - oraclejdk7
 
+
+
+script:
+  - mvn clean cobertura:cobertura -Dtest=RequestBodyTest#oneRequestBodyMultipleParameters -DfailIfNoTests=false
+
+before_deploy:
+- tar -zcvf coverage-result.tar.gz /home/travis/build/leusonmario/swagger-core/target/site/cobertura
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "gSUze/fYfJka6qLB3HMs0P0HwTq9xWMvmHtStc/itv4x4U/JG5kFyyKX2HLB4ySX/rwbPwNu9sCPPFl95E5ER/DNinDDXZ6jPlKiGUmhShlzFANqUNGYRf3eA9eSxmRWmvWTnsrShbfQ6aFw6jqBRNRnW78uXEkDOOHetObRqBr8PO+Ux/os4P9YXPriElA7YgtE+4ReFpYcOXYBqoC6YHF65l1t3p++p7u6bEMBnfBveLl7kMYRtaZSUH8c0DYUHLWqS8f1soeSA+qjVDLxDWoim6dcbUGaMfYJwn7qqdSzbj4g44aN1ClQPjTqdmOMl0pTZrwFmcG1yfmXJ2XDXdBU1upHBfvxnyD/GH05xqGL0JHnyaIAAQWIrJ0TIm76/4VbGWkly8AH1S98M3EkvnMqY07sZLxVAhriUG8Gw3UKsMcMfJ5+47Cyp/mL3fgtaDgpNhiuMVg41Xf/EWW7dTyRfu8YTbq1s7UMJaiXZT5hJLwRjIQF7BzDNiCFicdmMD+lYYYL4lUB+XV3uBdF7NEgQRDzwbeVYs21PgxhFMbtFzm1hlQd4M+gqp3SrCH2Z6Sj4Xb1yPBvU28WBmAsFv7bAS+Y9BrZOnxuN/iqbdNqA9Ghe4oY4/1S5/reIiWH5d8XA0n5DYiRK+XhH891ho5NnS76nhotPGgF6lt+fIY="
+
+
+  file: coverage-result.tar.gz
+  file_glob: true
+  overwrite: true
+  skip_cleanup: true
+  on:
+    tags: true
